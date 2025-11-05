@@ -288,120 +288,120 @@ def plot_experiment(x_values, means, stds, xlabel: str, title: str, show=True, s
 # === SCRIPT PRINCIPAL  ===
 # ==========================
 
-if __name__ == "__main__":
-    # === PARÂMETROS (ajuste conforme necessário) ===
-    DIST_CSV_PATH = "distancia_matrix.csv"   # arquivo que você enviou
-    MAX_ITER = 2000
-    ALPHA = 1.0
-    BETA = 2.0
-    RHO = 0.1            # taxa de evaporação padrão
-    Q = 1.0              # quantidade de feromônio depositada proporcional a Q / L
-    INITIAL_PHER = 1.0
-    ELITISM = False
-    ELITIST_WEIGHT = 0.0
-    CONVERGENCE_PATIENCE = 100  # conforme enunciado: solução converge se permanecer constante por 100 iterações
-    SEED = 42
-    VERBOSE = True
-    N_ANTS_DEFAULT = 20
-    N_ITERS_DEFAULT = 500  # iterações máximas por execução (suficientes para observar convergência em muitos casos)
 
-    # Parâmetros para experimentos
-    ants_list = [5, 10, 20, 40, 80]     # variação do número de formigas
-    ants_runs = 10                      # 10 execuções para cada quantidade de formigas
-    rho_list = [0.05, 0.1, 0.2, 0.4, 0.8]  # valores de evaporação a testar
-    rho_runs = 5                        # 5 execuções para cada valor de evaporação
+# === PARÂMETROS (ajuste conforme necessário) ===
+DIST_CSV_PATH = "distancia_matrix.csv"   # arquivo que você enviou
+MAX_ITER = 2000
+ALPHA = 1.0
+BETA = 2.0
+RHO = 0.1            # taxa de evaporação padrão
+Q = 1.0              # quantidade de feromônio depositada proporcional a Q / L
+INITIAL_PHER = 1.0
+ELITISM = False
+ELITIST_WEIGHT = 0.0
+CONVERGENCE_PATIENCE = 100  # conforme enunciado: solução converge se permanecer constante por 100 iterações
+SEED = 42
+VERBOSE = True
+N_ANTS_DEFAULT = 20
+N_ITERS_DEFAULT = 500  # iterações máximas por execução (suficientes para observar convergência em muitos casos)
 
-    # ===========================
-    # === Carrega matriz dist ===
-    # ===========================
-    dist_mat_global = read_distance_matrix(DIST_CSV_PATH)  # global usado por elitism update (nota: variável global)
-    n_cities = dist_mat_global.shape[0]
-    print(f"Matriz de distâncias carregada: {n_cities} cidades (shape={dist_mat_global.shape})")
+# Parâmetros para experimentos
+ants_list = [5, 10, 20, 40, 80]     # variação do número de formigas
+ants_runs = 10                      # 10 execuções para cada quantidade de formigas
+rho_list = [0.05, 0.1, 0.2, 0.4, 0.8]  # valores de evaporação a testar
+rho_runs = 5                        # 5 execuções para cada valor de evaporação
 
-    # ================
-    # === Execução ===
-    # ================
-    print("\nExecutando ACO (execução única de exemplo) para plot da curva de convergência...")
-    best_hist, best_tour, iter_conv = run_aco(dist_mat_global,
-                                              n_ants=N_ANTS_DEFAULT,
-                                              n_iterations=N_ITERS_DEFAULT,
-                                              alpha=ALPHA,
-                                              beta=BETA,
-                                              rho=RHO,
-                                              Q=Q,
-                                              initial_pheromone=INITIAL_PHER,
-                                              elitism=ELITISM,
-                                              elitist_weight=ELITIST_WEIGHT,
-                                              convergence_patience=CONVERGENCE_PATIENCE,
-                                              seed=SEED,
-                                              verbose=VERBOSE)
-    print(f"Melhor distância final encontrada: {best_hist[-1]:.6f}")
-    if best_tour is not None:
-        print(f"Melhor tour (prefixo): {best_tour[:10]} ... (comprimento = {len(best_tour)})")
-    else:
-        print("Nenhum tour salvo (problema inesperado).")
+# ===========================
+# === Carrega matriz dist ===
+# ===========================
+dist_mat_global = read_distance_matrix(DIST_CSV_PATH)  # global usado por elitism update (nota: variável global)
+n_cities = dist_mat_global.shape[0]
+print(f"Matriz de distâncias carregada: {n_cities} cidades (shape={dist_mat_global.shape})")
 
-    # detecta iteração de convergência (caso não tenha terminado antes)
-    iter_where_stable = detect_convergence_iteration(best_hist, patience=CONVERGENCE_PATIENCE)
-    if iter_where_stable < len(best_hist):
-        print(f"Solução ficou estável (convergência) começando na iteração {iter_where_stable}.")
-    else:
-        print("Solução não ficou estável (não convergiu dentro das iterações executadas).")
+# ================
+# === Execução ===
+# ================
+print("\nExecutando ACO (execução única de exemplo) para plot da curva de convergência...")
+best_hist, best_tour, iter_conv = run_aco(dist_mat_global,
+                                            n_ants=N_ANTS_DEFAULT,
+                                            n_iterations=N_ITERS_DEFAULT,
+                                            alpha=ALPHA,
+                                            beta=BETA,
+                                            rho=RHO,
+                                            Q=Q,
+                                            initial_pheromone=INITIAL_PHER,
+                                            elitism=ELITISM,
+                                            elitist_weight=ELITIST_WEIGHT,
+                                            convergence_patience=CONVERGENCE_PATIENCE,
+                                            seed=SEED,
+                                            verbose=VERBOSE)
+print(f"Melhor distância final encontrada: {best_hist[-1]:.6f}")
+if best_tour is not None:
+    print(f"Melhor tour (prefixo): {best_tour[:10]} ... (comprimento = {len(best_tour)})")
+else:
+    print("Nenhum tour salvo (problema inesperado).")
 
-    # Plot da melhor distância por iteração
-    plot_best_history(best_hist, title=f"Melhor distância por iteração (n_ants={N_ANTS_DEFAULT}, rho={RHO})")
+# detecta iteração de convergência (caso não tenha terminado antes)
+iter_where_stable = detect_convergence_iteration(best_hist, patience=CONVERGENCE_PATIENCE)
+if iter_where_stable < len(best_hist):
+    print(f"Solução ficou estável (convergência) começando na iteração {iter_where_stable}.")
+else:
+    print("Solução não ficou estável (não convergiu dentro das iterações executadas).")
 
-    # =========================
-    # === Experimento: ants ===
-    # =========================
-    print("\n=== Experimento: Variando número de formigas ===")
-    mean_iters_ants, std_iters_ants, results_ants = experiment_varying_ants(dist_mat_global,
-                                                                            ants_list,
-                                                                            runs_per_setting=ants_runs,
-                                                                            n_iterations=N_ITERS_DEFAULT,
-                                                                            alpha=ALPHA,
-                                                                            beta=BETA,
-                                                                            rho=RHO,
-                                                                            Q=Q,
-                                                                            initial_pheromone=INITIAL_PHER,
-                                                                            elitism=ELITISM,
-                                                                            elitist_weight=ELITIST_WEIGHT,
-                                                                            convergence_patience=CONVERGENCE_PATIENCE,
-                                                                            verbose=False)
+# Plot da melhor distância por iteração
+plot_best_history(best_hist, title=f"Melhor distância por iteração (n_ants={N_ANTS_DEFAULT}, rho={RHO})")
 
-    plot_experiment(ants_list, mean_iters_ants, std_iters_ants,
-                    xlabel="Número de formigas",
-                    title=f"Efeito do número de formigas na convergência (média ± std, {ants_runs} runs)")
+# =========================
+# === Experimento: ants ===
+# =========================
+print("\n=== Experimento: Variando número de formigas ===")
+mean_iters_ants, std_iters_ants, results_ants = experiment_varying_ants(dist_mat_global,
+                                                                        ants_list,
+                                                                        runs_per_setting=ants_runs,
+                                                                        n_iterations=N_ITERS_DEFAULT,
+                                                                        alpha=ALPHA,
+                                                                        beta=BETA,
+                                                                        rho=RHO,
+                                                                        Q=Q,
+                                                                        initial_pheromone=INITIAL_PHER,
+                                                                        elitism=ELITISM,
+                                                                        elitist_weight=ELITIST_WEIGHT,
+                                                                        convergence_patience=CONVERGENCE_PATIENCE,
+                                                                        verbose=False)
 
-    # ============================
-    # === Experimento: evaporação ===
-    # ============================
-    print("\n=== Experimento: Variando taxa de evaporação (rho) ===")
-    mean_iters_rho, std_iters_rho, results_rho = experiment_varying_evaporation(dist_mat_global,
-                                                                                 rho_list,
-                                                                                 runs_per_setting=rho_runs,
-                                                                                 n_iterations=N_ITERS_DEFAULT,
-                                                                                 alpha=ALPHA,
-                                                                                 beta=BETA,
-                                                                                 Q=Q,
-                                                                                 initial_pheromone=INITIAL_PHER,
-                                                                                 elitism=ELITISM,
-                                                                                 elitist_weight=ELITIST_WEIGHT,
-                                                                                 convergence_patience=CONVERGENCE_PATIENCE,
-                                                                                 verbose=False,
-                                                                                 n_ants=N_ANTS_DEFAULT)
+plot_experiment(ants_list, mean_iters_ants, std_iters_ants,
+                xlabel="Número de formigas",
+                title=f"Efeito do número de formigas na convergência (média ± std, {ants_runs} runs)")
 
-    plot_experiment(rho_list, mean_iters_rho, std_iters_rho,
-                    xlabel="Taxa de evaporação (rho)",
-                    title=f"Efeito da evaporação na convergência (média ± std, {rho_runs} runs)")
+# ============================
+# === Experimento: evaporação ===
+# ============================
+print("\n=== Experimento: Variando taxa de evaporação (rho) ===")
+mean_iters_rho, std_iters_rho, results_rho = experiment_varying_evaporation(dist_mat_global,
+                                                                                rho_list,
+                                                                                runs_per_setting=rho_runs,
+                                                                                n_iterations=N_ITERS_DEFAULT,
+                                                                                alpha=ALPHA,
+                                                                                beta=BETA,
+                                                                                Q=Q,
+                                                                                initial_pheromone=INITIAL_PHER,
+                                                                                elitism=ELITISM,
+                                                                                elitist_weight=ELITIST_WEIGHT,
+                                                                                convergence_patience=CONVERGENCE_PATIENCE,
+                                                                                verbose=False,
+                                                                                n_ants=N_ANTS_DEFAULT)
 
-    # === Salva resultados e imprime resumo ===
-    print("\nResumo dos experimentos:")
-    print("Ants setting:")
-    for a, m, s in zip(ants_list, mean_iters_ants, std_iters_ants):
-        print(f"  ants={a:3d} -> média iters p/ convergência = {m:.2f} (std={s:.2f})")
-    print("Evaporation setting:")
-    for r, m, s in zip(rho_list, mean_iters_rho, std_iters_rho):
-        print(f"  rho={r:.3f} -> média iters p/ convergência = {m:.2f} (std={s:.2f})")
+plot_experiment(rho_list, mean_iters_rho, std_iters_rho,
+                xlabel="Taxa de evaporação (rho)",
+                title=f"Efeito da evaporação na convergência (média ± std, {rho_runs} runs)")
 
-    print("\nFIM.")
+# === Salva resultados e imprime resumo ===
+print("\nResumo dos experimentos:")
+print("Ants setting:")
+for a, m, s in zip(ants_list, mean_iters_ants, std_iters_ants):
+    print(f"  ants={a:3d} -> média iters p/ convergência = {m:.2f} (std={s:.2f})")
+print("Evaporation setting:")
+for r, m, s in zip(rho_list, mean_iters_rho, std_iters_rho):
+    print(f"  rho={r:.3f} -> média iters p/ convergência = {m:.2f} (std={s:.2f})")
+
+print("\nFIM.")
